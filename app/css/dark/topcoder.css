@@ -16,11 +16,11 @@
 
 .cm-s-topcoder span.cm-comment {color: #cdab53;}
 .cm-s-topcoder span.cm-atom {color: #a16a94;}
-.cm-s-topcoder span.cm-number {color: #a16a94;}
-
+.cm-s-topcoder span.cm-number {color: #a16a94;
+}
 .cm-s-topcoder span.cm-property, .cm-s-topcoder span.cm-attribute {color: #01a252;}
-.cm-s-topcoder span.cm-keyword {color: #a162ef;}
-.cm-s-topcoder span.cm-string {color: #fded02;}
+.cm-s-topcoder span.cm-keyword {color: #a162ef;
+}.cm-s-topcoder span.cm-string {color: #fded02;}
 
 .cm-s-topcoder span.cm-variable {color: #48b4f6;}
 .cm-s-topcoder span.cm-variable-2 {color: #01a0e4;}
@@ -32,3 +32,5 @@
 
 .cm-s-topcoder .CodeMirror-activeline-background {background: #e8f2ff !important;}
 .cm-s-topcoder .CodeMirror-matchingbracket { text-decoration: underline; color: white !important;}
+.cm-s-topcoder .CodeMirror-overlayscroll-horizontal div, .cm-s-topcoder .CodeMirror-overlayscroll-vertical div { background: #242527;}
+.cm-s-topcoder:hover .CodeMirror-overlayscroll-horizontal div, .cm-s-topcoder:hover .CodeMirror-overlayscroll-vertical div { background: #2A2B2C;}

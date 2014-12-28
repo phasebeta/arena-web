@@ -31,3 +31,5 @@
 .cm-s-topcoder span.cm-link {color: #a16a94;}
 
 .cm-s-topcoder .CodeMirror-matchingbracket { text-decoration: underline; color: white !important;}
+.cm-s-topcoder .CodeMirror-overlayscroll-horizontal div, .cm-s-topcoder .CodeMirror-overlayscroll-vertical div { background: #44B0DB;}
+.cm-s-topcoder:hover .CodeMirror-overlayscroll-horizontal div, .cm-s-topcoder:hover .CodeMirror-overlayscroll-vertical div { background: #0699D1;}

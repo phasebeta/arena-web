@@ -104,6 +104,10 @@
  * @version 1.27
  */
 'use strict';
+//I know it doesn't look beautiful, but this is needed before ui-codemirror require
+window.CodeMirror = require('./../../bower_components/codemirror/lib/codemirror');
+require('./../../bower_components/codemirror/addon/scroll/simplescrollbars'); 
+
 /*jshint -W097*/
 /*jshint strict:false*/
 /*global arena:true */

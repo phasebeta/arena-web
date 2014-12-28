@@ -28,6 +28,8 @@
 .cm-s-topcoder span.cm-error {background: #db2d20; color: #5c5855;}
 .cm-s-topcoder span.cm-bracket {color: #3a3432;}
 .cm-s-topcoder span.cm-tag {color: #db2d20;}
-.cm-s-topcoder span.cm-link {color: #a16a94;}
+.cm-s-topcoder span.cm-link {color: #a16a94;}	
 
 .cm-s-topcoder .CodeMirror-matchingbracket { text-decoration: underline; color: white !important;}
+.cm-s-topcoder .CodeMirror-overlayscroll-horizontal div, .cm-s-topcoder .CodeMirror-overlayscroll-vertical div { background: #FFA740;}
+.cm-s-topcoder:hover .CodeMirror-overlayscroll-horizontal div, .cm-s-topcoder:hover .CodeMirror-overlayscroll-vertical div { background: #FF8A00;}
