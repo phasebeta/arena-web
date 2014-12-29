@@ -19,6 +19,10 @@ body{
 .panelContestStat .breadcrumbHead .breadcrumb li:before {
     background-image: url(../img/orange/sprite-2.png);
 }
+.codeArea .splitIcon:before
+{
+    background-image:url(../img/orange/sprite-spliticon.png);
+}
 .codeArea .vote:before,
 .codeArea .titleBar .shareLink > ul > li > a:after,
 .codeArea .socialLinks a:before,

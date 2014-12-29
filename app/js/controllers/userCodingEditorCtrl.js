@@ -1054,6 +1054,9 @@ var userCodingEditorCtrl = ['$rootScope', '$scope', '$window', 'appHelper', 'soc
         $scope.$on(helper.BROADCAST_PLUGIN_EVENT.submitFromPlugin, function (event) {
             $scope.submitSolution();
         });
+
+        $rootScope.$broadcast('code-loaded');
+
         /*
         $scope.lineNumbers = 21;
         $scope.errorMessages = $scope.range($scope.lineNumbers);

@@ -718,11 +718,11 @@ body a {cursor: pointer;}
 /*************** dashboard page */
 /* basical stucture, title, breadcrumb and connection */
 .inner{
-    min-height:760px;
+    min-height:650px;
 }
 .dashboard .titleBar {
     padding: 15px 15px 19px 0;
-    min-height: 78px;/*update*/
+    min-height: 56px;/*update*/
     position: relative;
 }
 .contest .titleBar {
@@ -7442,6 +7442,25 @@ table thead .sort.desc{
 .codeArea .chatWidget .panel-heading .collapseIcon:before,
 .codeArea .leaderboardWidget .panel-heading .collapseIcon:before {
     background-position: -21px 0;
+}
+.codeArea .splitIcon:before
+{
+    content: '';
+    display:block;
+    width:30px;
+    height:19px;
+    position:absolute;
+    right:16px;
+    background-position: 0, 0;
+    background-repeat: no-repeat;
+}
+.codeArea .splitIcon.normal:before
+{
+    background-position: 0 0;
+}
+.codeArea .splitIcon.disable:before
+{
+    background-position: -30px 0;
 }
 .codeArea .chatWidget .panel {
     width: 500px;

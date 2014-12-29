@@ -110,6 +110,10 @@ var userCodingCtrl = ['$scope', '$stateParams', '$rootScope', 'socket', '$window
             return roundData.phaseData.phaseType === helper.PHASE_TYPE_ID.ChallengePhase;
         };
 
+        $scope.getSplitStatus = function () {
+            return ($scope.topStatus === 'expand') || ($scope.bottomStatus === 'expand');
+        };
+
         $scope.getTopStatus = function () {
             return $scope.topStatus;
         };
@@ -118,50 +122,43 @@ var userCodingCtrl = ['$scope', '$stateParams', '$rootScope', 'socket', '$window
             return $scope.bottomStatus;
         };
 
-        $scope.collapseOther = function (target) {
-            // origin height of top-content: 169(with 1px padding)
-            // origin height of bottom-content: 516
-            // origin height of codemirror: 475
+        $scope.splitBoth = function() {
+            if($scope.getSplitStatus())
+            {
+                $scope.collapseOther('split');
+            }
+        };
+        $scope.updateSplitSize = function() {   
+        //Determine size of each element formula-ly
+            var windowHeight = $window.innerHeight;
             var windowWidth = $window.innerWidth;
+            var offsetHeight = $('#titleBar').outerHeight() + $('.header.navbar').outerHeight() + $('footer').outerHeight() + parseInt($('.panelCodeEditor').css('margin-bottom'));
+            var actualHeight = windowHeight - Math.round(offsetHeight);
+            var minHeight = 768 - Math.round(offsetHeight);
 
-            totalHeight = document.getElementById('top-content').offsetHeight + document.getElementById('bottom-content').offsetHeight;
-            toolBarHeight = 34 + 7;
+            toolBarHeight = 34 + 7; 
+
             if (windowWidth <= 502) {
                 toolBarHeight = 41 + 30;
             } else if (windowWidth <= 741) {
                 toolBarHeight = 41 + 60;
             }
 
-            if($scope.topStatus === 'normal') {
-                this.theCode = $scope.cmElem.CodeMirror.getValue();
-            } else if (this.theCode) {
-                $scope.cmElem.CodeMirror.setValue(this.theCode);
+            if(windowHeight <= 768) {
+                topHeight = minHeight/2;
+                bottomHeight = minHeight - topHeight;
+                totalHeight = topHeight + bottomHeight; 
+            } 
+            else {
+                topHeight = actualHeight/2;
+                bottomHeight = actualHeight - topHeight;
+                totalHeight = actualHeight; 
             }
 
-            if ((target === 'top-content' && $scope.topStatus === 'expand') ||
-                    (target === 'bottom-content' && $scope.bottomStatus === 'expand')) {
-                //return to normal status
-                $('#top-content').css({
-                    height: topHeight + 'px'
-                });
-                $('#bottom-content').css({
-                    height: bottomHeight + 'px'
-                });
-                $('#codeArea').css({
-                    height: (bottomHeight - toolBarHeight) + 'px'
-                });
-                $('#testPanelDiv').css({
-                    height: (bottomHeight - toolBarHeight + 5) + 'px'
-                });
-                $scope.$broadcast('test-panel-loaded');
-                $scope.topStatus = 'normal';
-                $scope.bottomStatus = 'normal';
-                $scope.cmElem.CodeMirror.refresh();
-                $scope.sharedObj.rebuildErrorBar();
-            } else if (target === 'top-content') {
-                // expand top-content and collapse bottom-content with codemirror
-                topHeight = document.getElementById('top-content').offsetHeight;
-                bottomHeight = document.getElementById('bottom-content').offsetHeight;
+            topHeight = topHeight - $('.panel-heading').outerHeight();
+            bottomHeight = bottomHeight - $('.panel-heading').outerHeight();
+
+        if($scope.topStatus === 'expand' && $scope.bottomStatus === 'normal'){
                 $('#top-content').css({
                     height: totalHeight + 'px'
                 });
@@ -171,14 +168,11 @@ var userCodingCtrl = ['$scope', '$stateParams', '$rootScope', 'socket', '$window
                 $('#codeArea').css({
                     height: '0' + 'px'
                 });
-                $scope.topStatus = 'expand';
-                $scope.bottomStatus = 'normal';
-                // close test report
                 $('#testReport').addClass('hide');
-            } else if (target === 'bottom-content') {
-                // expand bottom-content and collapse top one
-                topHeight = document.getElementById('top-content').offsetHeight;
-                bottomHeight = document.getElementById('bottom-content').offsetHeight;
+                $scope.cmElem.CodeMirror.refresh();
+                $scope.sharedObj.rebuildErrorBar();
+            }
+        else if($scope.bottomStatus === 'expand' && $scope.topStatus === 'normal'){
                 $('#top-content').css({
                     height: 1 + 'px'
                 });
@@ -191,14 +185,70 @@ var userCodingCtrl = ['$scope', '$stateParams', '$rootScope', 'socket', '$window
                 $('#testPanelDiv').css({
                     height: (totalHeight - 1 - toolBarHeight + 5) + 'px'
                 });
-                $scope.$broadcast('test-panel-loaded');
-                $scope.bottomStatus = 'expand';
-                $scope.topStatus = 'normal';
                 $scope.cmElem.CodeMirror.refresh();
                 $scope.sharedObj.rebuildErrorBar();
+        }
+        else {
+                $('#top-content').css({
+                    height: topHeight + 'px'
+                });
+                $('#bottom-content').css({
+                    height: bottomHeight + 'px'
+                });
+                $('#codeArea').css({
+                    height: (bottomHeight - toolBarHeight) + 'px'
+                });
+                $('#testPanelDiv').css({
+                    height: (bottomHeight - toolBarHeight + 5) + 'px'
+                });
+        }
+        };
+        var w = angular.element($window);
+        w.bind('resize', $scope.updateSplitSize);
+
+        $scope.$on('code-loaded', function () {
+            $scope.updateSplitSize();
+        });
+
+        $scope.collapseOther = function (target) {
+            // origin height of top-content: 169(with 1px padding)
+            // origin height of bottom-content: 516
+            // origin height of codemirror: 475
+
+            if($scope.topStatus === 'normal') {
+                this.theCode = $scope.cmElem.CodeMirror.getValue();
+            } else if (this.theCode) {
+                $scope.cmElem.CodeMirror.setValue(this.theCode);
+            }
+
+            if ((target === 'split') ||
+                    (target === 'top-content' && $scope.topStatus === 'expand') ||
+                    (target === 'bottom-content' && $scope.bottomStatus === 'expand')) {
+                //return to normal status
+                $scope.topStatus = 'normal';
+                $scope.bottomStatus = 'normal';
+                $scope.updateSplitSize();
+                $scope.$broadcast('test-panel-loaded');
+            } else if (target === 'top-content') {
+                // expand top-content and collapse bottom-content with codemirror
+                //topHeight = document.getElementById('top-content').offsetHeight;
+               // bottomHeight = document.getElementById('bottom-content').offsetHeight;
+                $scope.topStatus = 'expand';
+                $scope.bottomStatus = 'normal';
+                $scope.updateSplitSize();
+                // close test report
+            } else if (target === 'bottom-content') {
+                // expand bottom-content and collapse top one
+                //topHeight = document.getElementById('top-content').offsetHeight;
+                //bottomHeight = document.getElementById('bottom-content').offsetHeight;
+                $scope.bottomStatus = 'expand';
+                $scope.topStatus = 'normal';
+                $scope.updateSplitSize();
+                $scope.$broadcast('test-panel-loaded');
             }
             $rootScope.$broadcast('problem-loaded');
         };
+
         $scope.countdown = 1;
 
         /**

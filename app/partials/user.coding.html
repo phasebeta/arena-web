@@ -7,8 +7,10 @@
                     --><span class="item">Method Name&nbsp;:&nbsp;<span class="textWhite textBlack">{{problem.methodName}}</span>&nbsp;</span><br class="visible-xs"/><!--
                     --><span class="item">Return Type&nbsp;:&nbsp;<span class="textWhite textBlack">{{problem.allReturnType.typeMapping[lang(langIdx).id]}}</span></span><!--
                     --><span class="item">Arg Types&nbsp;:&nbsp;<span class="textWhite textBlack" data-ng-if="problemLoaded">({{problem.argTypeText}})</span></span><!--
-                --></div>
-            </div>
+                -->
+                </div>
+            </div>  
+            <a data-ng-click="splitBoth()" class="splitIcon" data-ng-class="{normal:getSplitStatus()==true, disable:getSplitStatus()==false}"></a>
             <!--div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 connection">
                 <div class="rate">Rate<a class="voteUp textGreen vote">+1</a><a class="voteDown textRed vote">-1</a></div>
             </div-->

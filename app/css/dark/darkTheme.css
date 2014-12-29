@@ -81,6 +81,10 @@ body{
 .modal-body .table>thead>tr>th .arrow{
     background-image: url(../img/dark/sprite-room-summary.png);
 }
+.codeArea .splitIcon:before
+{
+    background-image:url(../img/dark/sprite-spliticon.png);
+}
 .filterPanel.qtip-default,
 .filterPanel.largeSize.qtip-default {
     background-image: url(../img/dark/filter-bg.png);
