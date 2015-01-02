@@ -1209,11 +1209,18 @@ main.run(['$rootScope', '$state', 'sessionHelper', 'socket', '$window', 'tcTimeS
     }, false);
     //consider exposing states and state params to all templates
     $rootScope.$state = $state;
+    $rootScope.redirect = false;
     $rootScope.connectionID = undefined;
     $rootScope.startSyncResponse = false;
     $rootScope.lastServerActivityTime = new Date().getTime();
     $rootScope.leaderboard = [];
     $rootScope.$on('$stateChangeStart', function (event, toState, toParams) {
+        //prevent redirect event call
+        if($rootScope.redirect) {
+            $rootScope.redirect = false;
+            return;
+        }
+
         //use whitelist approach
         var allowedStates = [helper.STATE_NAME.Anonymous, helper.STATE_NAME.AnonymousHome, helper.STATE_NAME.LoggingIn, helper.STATE_NAME.Logout],
             publicState = false,
@@ -1230,52 +1237,59 @@ main.run(['$rootScope', '$state', 'sessionHelper', 'socket', '$window', 'tcTimeS
         });
         if (!publicState && !$rootScope.isLoggedIn) {
             event.preventDefault();
-            // Store deep link to session
-            if (isDeepLink) {
-                deepLink = {};
-                deepLink.state = toState.name;
-                switch (toState.name) {
-                case helper.STATE_NAME.DefaultContest:
-                case helper.STATE_NAME.Contest:
-                    deepLink.contestId = toParams.contestId;
-                    break;
-                case helper.STATE_NAME.Member:
-                    deepLink.memberName = toParams.memberName;
-                    break;
-                case helper.STATE_NAME.PracticeCode:
-                    deepLink.roundId = toParams.roundId;
-                    deepLink.componentId = toParams.componentId;
-                    deepLink.divisionId = toParams.divisionId;
-                    deepLink.roomId = toParams.roomId;
-                    break;
-                case helper.STATE_NAME.Coding:
-                    deepLink.roundId = toParams.roundId;
-                    deepLink.problemId = toParams.problemId;
-                    deepLink.divisionId = toParams.divisionId;
-                    break;
-                }
-                sessionHelper.setDeepLink(deepLink);
-            }
             $state.go(helper.STATE_NAME.AnonymousHome);
         }
+
+        // Store deep link to session
+        if (!publicState && isDeepLink) {
+            deepLink = {};
+            deepLink.state = toState.name;
+            switch (toState.name) {
+            case helper.STATE_NAME.DefaultContest:
+            case helper.STATE_NAME.Contest:
+                deepLink.contestId = toParams.contestId;
+                break;
+            case helper.STATE_NAME.Member:
+                deepLink.memberName = toParams.memberName;
+                break;
+            case helper.STATE_NAME.PracticeCode:
+                deepLink.roundId = toParams.roundId;
+                deepLink.componentId = toParams.componentId;
+                deepLink.divisionId = toParams.divisionId;
+                deepLink.roomId = toParams.roomId;
+                break;
+            case helper.STATE_NAME.Coding:
+                deepLink.roundId = toParams.roundId;
+                deepLink.problemId = toParams.problemId;
+                deepLink.divisionId = toParams.divisionId;
+                break;
+            }
+            sessionHelper.setDeepLink(deepLink);
+            console.log("set deeplink " + toState.name);
+        }
+
         // Move user to deep link, if stored
-        if (sessionHelper.getDeepLink() && $rootScope.isLoggedIn) {
+        if (sessionHelper.getDeepLink() && !$.isEmptyObject(sessionHelper.getDeepLink()) && $rootScope.isLoggedIn) {
             deepLink = sessionHelper.getDeepLink();
+            console.log(deepLink);
             if (deepLink.state === helper.STATE_NAME.DefaultContest || deepLink.state === helper.STATE_NAME.Contest) {
                 sessionHelper.setDeepLink({});
                 event.preventDefault();
+                $rootScope.redirect = true;
                 $state.go(deepLink.state, {
                     contestId: deepLink.contestId
                 }, {reload: true});
             } else if (deepLink.state === helper.STATE_NAME.Member) {
                 sessionHelper.setDeepLink({});
                 event.preventDefault();
+                $rootScope.redirect = true;
                 $state.go(deepLink.state, {
                     memberName: deepLink.memberName
                 }, {reload: true});
             } else if (deepLink.state === helper.STATE_NAME.PracticeCode) {
                 sessionHelper.setDeepLink({});
                 event.preventDefault();
+                $rootScope.redirect = true;
                 $state.go(deepLink.state, {
                     roundId : deepLink.roundId,
                     componentId : deepLink.componentId,
@@ -1285,6 +1299,7 @@ main.run(['$rootScope', '$state', 'sessionHelper', 'socket', '$window', 'tcTimeS
             } else if (deepLink.state === helper.STATE_NAME.Coding) {
                 sessionHelper.setDeepLink({});
                 event.preventDefault();
+                $rootScope.redirect = true;
                 $state.go(deepLink.state, {
                     roundId : deepLink.roundId,
                     problemId : deepLink.problemId,
