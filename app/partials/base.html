@@ -159,3 +159,18 @@
         <button class="btn right-btn" data-ng-click="cancel()" data-ng-show="buttons.length == 1">{{ buttons[0] }}</button>
     </div>
 </script>
+
+<script type="text/ng-template" id="popupModalReconnect.html">
+    <div class="modal-header">
+        {{ title }}
+        <span class="cancel-x" data-ng-click="cancel()" ng-if="enableClose">X</span>
+    </div>
+    <div class="modal-body">
+        <p ng-bind-html="message"></p>
+        <br/>
+    </div>
+    <div class="modal-footer">
+        <button class="btn right-btn" ng-if="$root.connected" data-ng-click="ok()">Connect</button>
+        <div class="right-btn" ng-if="!$root.connected"><div class="preloader-indicator"><img src="../img/preloader.gif"/>&nbsp;&nbsp;<span data-ng-show="$root.reconnecting">Reconnecting...</span><span data-ng-show="!$root.reconnecting">Connection Failed</span></div></div>
+    </div>
+</script>

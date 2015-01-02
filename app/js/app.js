@@ -603,7 +603,7 @@ main.config([ '$stateProvider', '$urlRouterProvider', 'themerProvider', '$httpPr
         });
 }]);
 
-main.run(['$rootScope', '$state', 'sessionHelper', 'socket', '$window', 'tcTimeService', '$cookies', 'themer', function ($rootScope, $state, sessionHelper, socket, $window, tcTimeService, $cookies, themer) {
+main.run(['$rootScope', '$state', 'sessionHelper', 'socket', '$window', 'tcTimeService', '$cookies', 'themer', '$timeout', function ($rootScope, $state, sessionHelper, socket, $window, tcTimeService, $cookies, themer, $timeout) {
     // setting defaut theme before json gets loaded
     if ($cookies.themeInUse !== null && $cookies.themeInUse !== undefined) {
         themer.styles[0].key = $cookies.themeInUse;
@@ -1303,6 +1303,7 @@ main.run(['$rootScope', '$state', 'sessionHelper', 'socket', '$window', 'tcTimeS
         $rootScope.keepAliveTimeout = helper.KEEP_ALIVE_TIMEOUT;
 
         $rootScope.reconnected = false;
+        $rootScope.reconnecting = false;
 
         socket.on(helper.EVENT_NAME.SocketConnected, function () {
             $rootScope.connected = true;
@@ -1320,11 +1321,21 @@ main.run(['$rootScope', '$state', 'sessionHelper', 'socket', '$window', 'tcTimeS
             $rootScope.$broadcast(helper.EVENT_NAME.SocketError, {});
         });
 
-        socket.on(helper.EVENT_NAME.SocketReconnect, function () {
+        socket.on(helper.EVENT_NAME.SocketReconnect, function (transport_type, reconnectionAttempts) {
+            // Called when the connection is actually a reconnection, SocketConnect is also called after this
+            // $rootScope.connected = true;
+        });
+        socket.on(helper.EVENT_NAME.SocketReconnecting, function (reconnectionDelay, reconnectionAttempts) {
             // get reconnect, but it should login again, keep connected flag to false here.
             // $rootScope.connected = true;
-            $rootScope.reconnected = true;
+            $rootScope.reconnecting = true;
+            $timeout(function() { $rootScope.reconnecting = false; }, helper.RECONNECTION_INTERVAL / 3);
         });
+        socket.on(helper.EVENT_NAME.SocketReconnectFailed, function () {
+            // get reconnect, but it should login again, keep connected flag to false here.
+            // $rootScope.connected = true;
+        });
+
     });
 
     /**

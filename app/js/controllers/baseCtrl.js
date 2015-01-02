@@ -505,19 +505,27 @@ var baseCtrl = ['$rootScope', '$scope', '$http', 'appHelper', 'notificationServi
             $scope.openModal({
                 title: helper.POP_UP_TITLES.Disconnected,
                 message: helper.POP_UP_MESSAGES.LostConnection,
-                enableClose: true
-            });
+                enableClose: false
+            },
+            function() {
+                if(!isDisconnecting) {
+                    console.log("reconnection");
+                }
+            }, //ok()
+            null, //cancel()
+            "popupModalReconnect.html");
         }
     });
     $scope.$on(helper.EVENT_NAME.Connected, function (event, data) {
         if (isDisconnecting) {
             isDisconnecting = false;
             if ($rootScope.currentModal !== undefined && $rootScope.currentModal !== null) {
-                $rootScope.currentModal.dismiss('cancel');
+                //$rootScope.currentModal.dismiss('cancel');
             }
+            /*
             if (!$rootScope.reconnected) {
                 $state.go(helper.STATE_NAME.AnonymousHome);
-            }
+            }*/
         }
     });
     $scope.$on(helper.EVENT_NAME.PopUpGenericResponse, function (event, data) {

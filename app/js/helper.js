@@ -221,9 +221,12 @@ module.exports = {
         Disconnected: 'Disconnected',
         // socket events
         SocketConnected: 'connect',
+        SocketConnecting: 'connecting',
         SocketConnectionFailed: 'connect_failed',
         SocketDisconnected: 'disconnect',
         SocketReconnect: 'reconnect',
+        SocketReconnecting: 'reconnecting',
+        SocketReconnectFailed: 'reconnect_failed',
         SocketError: 'error'
     },
 
@@ -305,6 +308,8 @@ module.exports = {
     SYNC_TIME_INTERVAL: 45 * 1000,
     // the interval between two connection checks
     CONNECTION_UPDATE_INTERVAL: 5 * 1000,
+    // the interval between two reconnection attempts,
+    RECONNECTION_INTERVAL: 5000,
     // if server doesn't respond in this time interval (in ms) we will detect timeout
     INNACTIVITY_TIMEOUT: 90 * 1000,
     // default value for keep alive timeout
@@ -337,9 +342,10 @@ module.exports = {
     POP_UP_MESSAGES: {
         Reconnecting: "Waiting to reconnect...\nPress Close to logout and go to the login screen.",
         ForcedLogout: 'Logging off as you logged in to another session or browser.',
-        LostConnection: 'The connection to the server has been lost. Please log off and log in again.',
+        LostConnection: 'Server Connection is <strong>interrupted</strong>!\nPlease check your internet connection, and press <strong>Connect</strong> when available.',
+        FailedConnection: 'Cannot connect to server! Please verify your internet connection.',
         NotAssigned: 'You are not assigned to this room'
-    },
+    }   ,
 
     // The mapper from time zone code (must be uppercase) to offset from UTC (in minutes).
     // NOTE: List should be extended, here is the list: https://en.wikipedia.org/wiki/List_of_time_zone_abbreviations
