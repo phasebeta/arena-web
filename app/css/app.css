@@ -1124,6 +1124,12 @@ footer .right>span:nth-child(2) {
 .modal .modal-content .modal-reconnect {
     line-height: 3;
 }
+.modal .modal-content .modal-reconnect-btn {
+    width:86px !important;
+    height:31px !important;
+    margin-top:5px;
+    line-height: 21px !important;
+}
 .modal .modal-content
 .confirmPara li span {
     display: inline-block;

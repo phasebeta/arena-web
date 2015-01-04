@@ -543,14 +543,12 @@ var baseCtrl = ['$rootScope', '$scope', '$http', 'appHelper', 'notificationServi
     $rootScope.reconnecting = false;
 
     $scope.reloadCurrentPage = function() {
-        //Refer to socket 0.9-1.0 issue:
-        //http://stackoverflow.com/questions/24886481/socket-io-client-side-reconnect-not-working
-        //https://github.com/Automattic/socket.io-client/issues/251
-        //$state.transitionTo( $state.current, $state.params, { reload: true, inherit: true, notify: true } );
+        //Page reload
         $window.location.reload();
         $rootScope.reconnecting = false; 
     }
-    $scope.openReconnectingModal = function() {
+    $scope.openReconnectingModal = function() 
+    {
         $rootScope.reconnecting = true;
         $scope.openSmallModal({
             title: "Reconnection Attempt",
@@ -574,6 +572,7 @@ var baseCtrl = ['$rootScope', '$scope', '$http', 'appHelper', 'notificationServi
         if (!isDisconnecting) {
             isDisconnecting = true;
             if(!$rootScope.reconnecting){
+                //Disconnected Dialog
                 $scope.openModal({
                     title: helper.POP_UP_TITLES.Disconnected,
                     message: helper.POP_UP_MESSAGES.LostConnection,

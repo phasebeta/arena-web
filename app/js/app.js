@@ -591,8 +591,8 @@ main.config([ '$stateProvider', '$urlRouterProvider', 'themerProvider', '$httpPr
         .state('loggingin', {
             //eg for auth0
             //url: '/access_token={accessToken}&id_token={idToken}&token_type={tokenType}',
-            //url: '/loggingin',
-            //template: 'Completing login... One moment please...',
+            url: '/loggingin',
+            template: 'Completing login... One moment please...',
             data: {
                 pageTitle: "Logging In",
                 pageMetaKeywords: "login"

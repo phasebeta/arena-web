@@ -166,8 +166,8 @@
     <div class="modal-footer">
         <div ng-if="!$root.connected" class="preloader-indicator pull-left"><img src="../img/preloader.gif"/>&nbsp;&nbsp;Connecting to Server</div>
         <div class="pull-left" ng-if="$root.connected">
-            <span class="pull-left modal-reconnect">Connection Successful&nbsp;&nbsp;&nbsp;</span>
-            <div class="btn right-btn" data-ng-click="ok()">Reconnect</div>
+            <span class="pull-left modal-reconnect">Connection Established&nbsp;&nbsp;&nbsp;</span>
+            <div class="btn right-btn btn-sm modal-reconnect-btn" data-ng-click="ok()">Reconnect</div>
         </div>
     </div>
 </script>
