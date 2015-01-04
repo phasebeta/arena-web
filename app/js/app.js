@@ -591,8 +591,8 @@ main.config([ '$stateProvider', '$urlRouterProvider', 'themerProvider', '$httpPr
         .state('loggingin', {
             //eg for auth0
             //url: '/access_token={accessToken}&id_token={idToken}&token_type={tokenType}',
-            url: '/loggingin',
-            template: 'Completing login... One moment please...',
+            //url: '/loggingin',
+            //template: 'Completing login... One moment please...',
             data: {
                 pageTitle: "Logging In",
                 pageMetaKeywords: "login"
@@ -1310,20 +1310,23 @@ main.run(['$rootScope', '$state', 'sessionHelper', 'socket', '$window', 'tcTimeS
         });
         socket.on(helper.EVENT_NAME.SocketDisconnected, function () {
             $rootScope.connected = false;
-            $rootScope.$broadcast(helper.EVENT_NAME.Disconnected, {});
+            $rootScope.$broadcast(helper.EVENT_NAME.Disconnected, {  });
+        });        
+        socket.on(helper.EVENT_NAME.SocketClose, function () {
+            $rootScope.connected = false;
+            $rootScope.$broadcast(helper.EVENT_NAME.Disconnected, {  });
         });
         socket.on(helper.EVENT_NAME.SocketConnectionFailed, function () {
             $rootScope.connected = false;
-            $rootScope.$broadcast(helper.EVENT_NAME.Disconnected, {});
+            $rootScope.$broadcast(helper.EVENT_NAME.Disconnected, {  });
         });
         socket.on(helper.EVENT_NAME.SocketError, function () {
             $rootScope.$broadcast(helper.EVENT_NAME.SocketError, {});
         });
-
         socket.on(helper.EVENT_NAME.SocketReconnect, function () {
-            // get reconnect, but it should login again, keep connected flag to false here.
-            // $rootScope.connected = true;
+            $rootScope.connected = true;
             $rootScope.reconnected = true;
+            $rootScope.$broadcast(helper.EVENT_NAME.Connected, {});
         });
     });
 

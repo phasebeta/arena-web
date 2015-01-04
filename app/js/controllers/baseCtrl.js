@@ -451,6 +451,57 @@ var baseCtrl = ['$rootScope', '$scope', '$http', 'appHelper', 'notificationServi
         });
     };
 
+    /**
+     * Open small modal function.
+     *
+     * @param data the data
+     * @param handle the handler
+     * @param finish the finish function
+     */
+    $scope.openSmallModal = function (data, handle, finish, templateUrl) {
+        var cssName = '';
+        if ($rootScope.currentModal) {
+            $rootScope.currentModal.dismiss('cancel');
+            $rootScope.currentModal = undefined;
+        }
+        if (!templateUrl) {
+            templateUrl =  'popupModalBase.html';
+        }
+
+        if (templateUrl === 'partials/user.contest.registration.html') {
+            cssName = 'marginTop';
+        }
+        $rootScope.currentModal = $modal.open({
+            templateUrl: templateUrl,
+            windowClass: cssName,
+            controller: popupModalCtrl,
+            backdrop: 'static',
+            size: 'sm',
+            resolve: {
+                data: function () {
+                    return data;
+                },
+                ok: function () {
+                    return function () {
+                        if (angular.isFunction(handle)) {
+                            handle();
+                        }
+                        if (templateUrl !== 'partials/user.contest.registration.html') {
+                            $rootScope.currentModal = undefined;
+                        }
+                    };
+                },
+                cancel: function () {
+                    return function () {
+                        if (angular.isFunction(finish)) {
+                            finish();
+                        }
+                        $rootScope.currentModal = undefined;
+                    };
+                }
+            }
+        });
+    };
 
     /**
      * Set timeout modal.
@@ -489,6 +540,26 @@ var baseCtrl = ['$rootScope', '$scope', '$http', 'appHelper', 'notificationServi
         modalTimeoutPromise = $timeout(setTimeoutModal, helper.REQUEST_TIME_OUT);
         socket.emit(helper.EVENT_NAME.CoderInfoRequest, {coder: name, userType: userType});
     };
+    $rootScope.reconnecting = false;
+
+    $scope.reloadCurrentPage = function() {
+        //Refer to socket 0.9-1.0 issue:
+        //http://stackoverflow.com/questions/24886481/socket-io-client-side-reconnect-not-working
+        //https://github.com/Automattic/socket.io-client/issues/251
+        //$state.transitionTo( $state.current, $state.params, { reload: true, inherit: true, notify: true } );
+        $window.location.reload();
+        $rootScope.reconnecting = false; 
+    }
+    $scope.openReconnectingModal = function() {
+        $rootScope.reconnecting = true;
+        $scope.openSmallModal({
+            title: "Reconnection Attempt",
+            message: "none"
+        },  
+        $scope.reloadCurrentPage, 
+        null, 
+        'popupModalReconnect.html');
+    };
     /*jslint unparam: true*/
     $scope.$on(helper.EVENT_NAME.ForcedLogoutResponse, function (event, data) {
         $scope.openModal({
@@ -502,22 +573,21 @@ var baseCtrl = ['$rootScope', '$scope', '$http', 'appHelper', 'notificationServi
     $scope.$on(helper.EVENT_NAME.Disconnected, function (event, data) {
         if (!isDisconnecting) {
             isDisconnecting = true;
-            $scope.openModal({
-                title: helper.POP_UP_TITLES.Disconnected,
-                message: helper.POP_UP_MESSAGES.LostConnection,
-                enableClose: true
-            });
+            if(!$rootScope.reconnecting){
+                $scope.openModal({
+                    title: helper.POP_UP_TITLES.Disconnected,
+                    message: helper.POP_UP_MESSAGES.LostConnection,
+                    enableClose: true,
+                    buttons : ['Ok']
+                },
+                null,
+                $scope.openReconnectingModal);
+            }
         }
     });
     $scope.$on(helper.EVENT_NAME.Connected, function (event, data) {
         if (isDisconnecting) {
             isDisconnecting = false;
-            if ($rootScope.currentModal !== undefined && $rootScope.currentModal !== null) {
-                $rootScope.currentModal.dismiss('cancel');
-            }
-            if (!$rootScope.reconnected) {
-                $state.go(helper.STATE_NAME.AnonymousHome);
-            }
         }
     });
     $scope.$on(helper.EVENT_NAME.PopUpGenericResponse, function (event, data) {

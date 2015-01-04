@@ -224,6 +224,7 @@ module.exports = {
         SocketConnectionFailed: 'connect_failed',
         SocketDisconnected: 'disconnect',
         SocketReconnect: 'reconnect',
+        SocketClose: 'close',
         SocketError: 'error'
     },
 
@@ -305,6 +306,8 @@ module.exports = {
     SYNC_TIME_INTERVAL: 45 * 1000,
     // the interval between two connection checks
     CONNECTION_UPDATE_INTERVAL: 5 * 1000,
+    // the interval between two reconnection attempts,
+    RECONNECTION_INTERVAL: 3 * 1000,
     // if server doesn't respond in this time interval (in ms) we will detect timeout
     INNACTIVITY_TIMEOUT: 90 * 1000,
     // default value for keep alive timeout
@@ -337,7 +340,7 @@ module.exports = {
     POP_UP_MESSAGES: {
         Reconnecting: "Waiting to reconnect...\nPress Close to logout and go to the login screen.",
         ForcedLogout: 'Logging off as you logged in to another session or browser.',
-        LostConnection: 'The connection to the server has been lost. Please log off and log in again.',
+        LostConnection: 'The communication with the web server has been <strong>interrupted</strong>!\nPlease verify your internet connection and press <strong>Reconnect</strong>.',
         NotAssigned: 'You are not assigned to this room'
     },
 

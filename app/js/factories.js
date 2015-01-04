@@ -61,9 +61,13 @@
 /*global arena:true */
 var config = require('./config');
 var Auth0 = require('auth0-js');
-var socket = require('socket.io-client').connect(config.webSocketURL);
-
 var helper = require('./helper');
+var io = require('socket.io-client');
+var socket = io.connect(config.webSocketURL, { 
+    'reconnect' : true, 
+    'max reconnection attempts' : 'Infinity', 
+    'reconnection limit' : helper.RECONNECTION_INTERVAL, 
+    'reconnection delay' : helper.RECONNECTION_INTERVAL } );
 ///////////////
 // FACTORIES //
 
