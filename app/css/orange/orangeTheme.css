@@ -54,7 +54,8 @@ body{
 .filterPanel .closeLink:before,
 .wizardBody .panel-heading >span:before,
 .testReportPanel .caseName>a,
-.testReportPanel .modalHeader .cancel-x:before {
+.testReportPanel .modalHeader .cancel-x:before,
+.keyboardShortcuts .modal-header .cancel-x:before {
     background-image: url(../img/orange/sprite-codeArena.png);
 }
 .codeArea .shareLink .dropdown-menu,
@@ -354,7 +355,21 @@ footer .left>span {
 .testReportPanel .modalFooter {
     border-top: 1px solid #ffe6c7;
 }
-
+.keyboardShortcuts .modal-header .title {
+    color: #656565;
+}
+.keyboardShortcuts .modal-body .description {
+    color: #333333;
+}
+.keyboardShortcuts .modal-body .keycombo {
+    color: #e34014;
+}
+.keyboardShortcuts .modal-body .subscript {
+    color: #0c0c0c;
+}
+.keyboardShortcuts .modal-body .table>tbody>tr>td {
+    border-bottom-color: #e7e7e7;
+}
 /*contest creation wizard modal*/
 .modal-lg .modal-content {
     border-color: #e7e7e7

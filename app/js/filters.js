@@ -92,5 +92,28 @@ filters.practiceProblemFilter = [function () {
         return newProblems;
     };
 }];
-
+/**
+ * Format key combos to readable shortcuts
+ */
+filters.keyCombo = [function () {
+    return function (combo) {
+        var sequence = combo.split(/[\s]/), i;
+        function symbolize(combo) {
+            combo = combo.split('+');
+            for (i = 0; i < combo.length; i += 1) {
+              // try to resolve command / ctrl based on OS:
+                if (combo[i] === 'mod') {
+                    combo[i] = 'Cmd/Ctrl';
+                }
+            }
+            combo = combo.join(' + ');
+            combo = combo.replace(/(?:^|\s)\S/g, function (a) { return a.toUpperCase(); });
+            return combo;
+        }
+        for (i = 0; i < sequence.length; i += 1) {
+            sequence[i] = symbolize(sequence[i]);
+        }
+        return sequence[0];
+    };
+}];
 module.exports = filters;

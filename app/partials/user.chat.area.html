@@ -117,7 +117,7 @@
                     </li>
                 </ul>
                 <form name="chatForm" data-ng-submit="chatSubmit();">
-                    <div class="chatInput" id="chatInputDiv"><input type="text" name="chat" placeholder="Type chat..." data-ng-model="chatText" id="chatInputText" class="chatInputText"></div>
+                    <div class="chatInput" id="chatInputDiv"><input type="text" name="chat" placeholder="Type chat..." data-ng-model="chatText" id="chatInputText" class="chatInputText" focus-on="focus:chat"></div>
                     <a data-ng-click="setFindMode(true)" class="searchIcon"></a>
                     <button data-ng-hide="true" type="submit"></button>
                 </form>

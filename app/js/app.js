@@ -155,6 +155,7 @@ require('./../../bower_components/angulartics/dist/angulartics.min');
 require('./../../bower_components/angulartics/dist/angulartics-ga.min');
 require('./../../bower_components/angular-table/dist/ng-table.min.js');
 require('./../../bower_components/angular-facebook/lib/angular-facebook');
+require('./../../bower_components/angular-hotkeys/build/hotkeys.min');
 require('./../../thirdparty/jquery.qtip/jquery.qtip.min.js');
 require('./../../thirdparty/ng-scrollbar/dist/ng-scrollbar.js');
 require('./../../thirdparty/bootstrap-notify/js/bootstrap-transition.js');
@@ -264,6 +265,7 @@ directives.challengesAdvertiser = require('./directives/challengesAdvertiser');
 directives.ngScrollbarAutoscroll = require('./directives/ngScrollbarAutoscroll');
 directives.chatSettings = require('./directives/chatSettings');
 directives.toggleSetting = require('./directives/toggleSetting');
+directives.focusOn = require('./directives/focusOn');
 
 /*global $ : false, angular : false, twttr : true */
 /*jslint nomen: true, browser: true */
@@ -275,7 +277,7 @@ directives.toggleSetting = require('./directives/toggleSetting');
 // WARNING: ALL dependency injections must be explicitly declared for release js minification to work!!!!!
 // SEE: http://thegreenpizza.github.io/2013/05/25/building-minification-safe-angular.js-applications/ for explanation.
 
-var main = angular.module('angularApp', ['ui.router', 'ngResource', 'ui.bootstrap', 'ngSanitize', 'timer', 'ui.codemirror', 'ui.calendar', 'ngScrollbar', 'ngCustomScrollbar', 'angular-themer', 'ngCookies', 'angulartics', 'angulartics.google.analytics', 'ngTable', 'LocalStorageModule', 'facebook', 'ngClipboard', 'frapontillo.bootstrap-switch', 'perfect_scrollbar']);
+var main = angular.module('angularApp', ['ui.router', 'ngResource', 'ui.bootstrap', 'ngSanitize', 'timer', 'ui.codemirror', 'ui.calendar', 'ngScrollbar', 'ngCustomScrollbar', 'angular-themer', 'ngCookies', 'angulartics', 'angulartics.google.analytics', 'ngTable', 'LocalStorageModule', 'facebook', 'ngClipboard', 'frapontillo.bootstrap-switch', 'perfect_scrollbar', 'cfp.hotkeys']);
 
 ///////////////
 // FACTORIES //
@@ -297,6 +299,7 @@ main.filter('showByMonth', filters.showByMonth);
 main.filter('startFrom', filters.startFrom);
 main.filter('highlight', filters.highlight);
 main.filter('practiceProblemFilter', filters.practiceProblemFilter);
+main.filter('keyCombo', filters.keyCombo);
 
 /////////////////
 // CONTROLLERS //
@@ -377,11 +380,12 @@ main.directive('challengesAdvertiser', directives.challengesAdvertiser);
 main.directive('ngScrollbarAutoscroll', directives.ngScrollbarAutoscroll);
 main.directive('chatSettings', directives.chatSettings);
 main.directive('toggleSetting', directives.toggleSetting);
+main.directive('focusOn', directives.focusOn);
 
 //////////////////////////////////////
 // ROUTING AND ROUTING INTERCEPTORS //
 
-main.config([ '$stateProvider', '$urlRouterProvider', 'themerProvider', '$httpProvider', 'FacebookProvider', 'ngClipProvider', function ($stateProvider, $urlRouterProvider, themerProvider, $httpProvider, FacebookProvider, ngClipProvider) {
+main.config([ '$stateProvider', '$urlRouterProvider', 'themerProvider', '$httpProvider', 'FacebookProvider', 'ngClipProvider', 'hotkeysProvider', function ($stateProvider, $urlRouterProvider, themerProvider, $httpProvider, FacebookProvider, ngClipProvider, hotkeysProvider) {
     if (config.staticFileHost === 'undefined') {
         config.staticFileHost = "";
     }
@@ -406,6 +410,9 @@ main.config([ '$stateProvider', '$urlRouterProvider', 'themerProvider', '$httpPr
     //default is homepage not logged in
     $urlRouterProvider.otherwise('/a/home');
     ngClipProvider.setPath(config.staticFileHost + "/data/ZeroClipboard.swf");
+
+    //hotkey config
+    hotkeysProvider.includeCheatSheet = false;
 
     //setup state machine logic (routing) for the entire app
     $stateProvider
@@ -774,6 +781,13 @@ main.run(['$rootScope', '$state', 'sessionHelper', 'socket', '$window', 'tcTimeS
                 $rootScope.$broadcast(helper.BROADCAST_PLUGIN_EVENT.searchFromPlugin, text);
             },
             /**
+             * Trigger the goto line number in editor.
+             * @param text - the search text.
+             */
+            gotoLine : function (number) {
+                $rootScope.$broadcast(helper.BROADCAST_PLUGIN_EVENT.gotoFromPlugin, number);
+            },
+            /**
              * Set language to editor.
              * @param languageName - the language name.
              */
@@ -806,11 +820,11 @@ main.run(['$rootScope', '$state', 'sessionHelper', 'socket', '$window', 'tcTimeS
                 $rootScope.$broadcast(helper.BROADCAST_PLUGIN_EVENT.runAllTestCasesFromPlugin, null);
             },
             /**
-             * Run the test case by name.
-             * @param name - the test case name.
+             * Run the test case either by name or number.
+             * @param arg - the test case name or number.
              */
-            runTest : function (name) {
-                $rootScope.$broadcast(helper.BROADCAST_PLUGIN_EVENT.runTestCaseFromPlugin, name);
+            runTest : function (arg) {
+                $rootScope.$broadcast(helper.BROADCAST_PLUGIN_EVENT.runTestCaseFromPlugin, arg);
             },
             /**
              * Set the given test cases to test panel.

@@ -150,6 +150,7 @@ var baseCtrl = ['$rootScope', '$scope', '$http', 'appHelper', 'notificationServi
             $scope.registrants = data.registrants;
             $scope.numCoderRequest = 0;
             $scope.showError = data.showError;
+            $scope.hotkeys = data.hotkeys;
 
             // define initial sorting order for registrants list
             $scope.registrantPredicate = 'userRating';
@@ -294,6 +295,7 @@ var baseCtrl = ['$rootScope', '$scope', '$http', 'appHelper', 'notificationServi
                     }
                 });
             };
+            /*jslint unparam: true*/
             $scope.$on(helper.EVENT_NAME.PopUpGenericResponse, function (event, data) {
                 if (data.title === helper.POP_UP_TITLES.CoderInfo && $scope.title === helper.POP_UP_TITLES.CoderInfo) {
                     $scope.coderInfo = data.message;
@@ -479,6 +481,9 @@ var baseCtrl = ['$rootScope', '$scope', '$http', 'appHelper', 'notificationServi
         }
         if (templateUrl === 'popupSystemTestResultBase.html') {
             cssName = 'systemTestResult';
+        }
+        if (templateUrl === 'popupKeyboardShortcuts.html') {
+            cssName = 'keyboardShortcuts';
         }
         $rootScope.currentModal = $modal.open({
             templateUrl: templateUrl,

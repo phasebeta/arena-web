@@ -90,8 +90,8 @@ var config = require('../config');
  *
  * @type {*[]}
  */
-var userCodingCtrl = ['$scope', '$stateParams', '$rootScope', 'socket', '$window', '$timeout', '$state', 'tcTimeService', 'keyboardManager', 'appHelper', '$http',
-    function ($scope, $stateParams, $rootScope, socket, $window, $timeout, $state, tcTimeService, keyboardManager, appHelper, $http) {
+var userCodingCtrl = ['$scope', '$stateParams', '$rootScope', 'socket', '$window', '$timeout', '$state', 'tcTimeService', 'keyboardManager', 'appHelper', '$http', 'hotkeys',
+    function ($scope, $stateParams, $rootScope, socket, $window, $timeout, $state, tcTimeService, keyboardManager, appHelper, $http, hotkeys) {
         $rootScope.$broadcast('hideFeedback');
         // shared between children scopes
         $scope.sharedObj = {};
@@ -125,7 +125,7 @@ var userCodingCtrl = ['$scope', '$stateParams', '$rootScope', 'socket', '$window
 
         $rootScope.previousStateName = $scope.currentStateName();
 
-        var componentOpened = false, problemRetrieved = false, notified = false, round, isValidComponent = false;
+        var componentOpened = false, problemRetrieved = false, notified = false, round, isValidComponent = false, hotKeysList = [], runCase, i;
 
         $scope.getFlexProperties = function (flexRatio) {
             var flex = String(flexRatio) + ' ' + String(flexRatio) + ' ' + 100 * flexRatio + '%';
@@ -262,7 +262,7 @@ var userCodingCtrl = ['$scope', '$stateParams', '$rootScope', 'socket', '$window
          * @returns {string} the signature
          */
         $scope.getMethodSignature = function (langID) {
-            var ret = '', i;
+            var ret = '';
             if (langID === 1 || langID === 3 || langID === 4) {
                 // c style method signature for java, c++, csharp
                 ret += $scope.problem.allReturnType.typeMapping[langID];
@@ -606,13 +606,160 @@ var userCodingCtrl = ['$scope', '$stateParams', '$rootScope', 'socket', '$window
             } else if ($scope.windowStatus.leaderboard === 'normal') {
                 $scope.windowStatus.leaderboard = 'min';
             }
-            $scope.$broadcast('rebuild:chatboard');
         });
+        // populate keyboard shortcuts
+        hotKeysList = [
+            {
+                combo: helper.CODING_KEYBOARD_SHORTCUTS.compile,
+                description: helper.CODING_KEYBOARD_SHORTCUTS_DESCRIPTION.compile,
+                allowIn: ['INPUT', 'SELECT', 'TEXTAREA'],
+                callback: function (e) {
+                    e.preventDefault();
+                    if ($rootScope.currentModal) {
+                        $rootScope.currentModal.dismiss('cancel');
+                        $rootScope.currentModal = undefined;
+                    } else {
+                        $rootScope.$broadcast(helper.BROADCAST_PLUGIN_EVENT.compileFromPlugin, null);
+                    }
+                }
+            },
+            {
+                combo: helper.CODING_KEYBOARD_SHORTCUTS.runAllTestCases,
+                description: helper.CODING_KEYBOARD_SHORTCUTS_DESCRIPTION.runAllTestCases,
+                allowIn: ['INPUT', 'SELECT', 'TEXTAREA'],
+                callback: function (e) {
+                    e.preventDefault();
+                    $rootScope.$broadcast('close:testreports');
+                    $rootScope.$broadcast(helper.BROADCAST_PLUGIN_EVENT.runAllTestCasesFromPlugin, null);
+                }
+            },
+            {
+                combo: helper.CODING_KEYBOARD_SHORTCUTS.runTestCaseByNumber + '+n',
+                description: helper.CODING_KEYBOARD_SHORTCUTS_DESCRIPTION.runTestCaseByNumber,
+                subscript: '(N is a number between 1 and 9 of the number of the test case)',
+                callback: function () { return; }
+            },
+            {
+                combo: helper.CODING_KEYBOARD_SHORTCUTS.jumpToSearchBox,
+                description: helper.CODING_KEYBOARD_SHORTCUTS_DESCRIPTION.jumpToSearchBox,
+                allowIn: ['INPUT', 'SELECT', 'TEXTAREA'],
+                callback: function (e) {
+                    e.preventDefault();
+                    $rootScope.$broadcast('focus:search');
+                }
+            },
+            {
+                combo: helper.CODING_KEYBOARD_SHORTCUTS.jumpToGotoBox,
+                description: helper.CODING_KEYBOARD_SHORTCUTS_DESCRIPTION.jumpToGotoBox,
+                allowIn: ['INPUT', 'SELECT', 'TEXTAREA'],
+                callback: function (e) {
+                    e.preventDefault();
+                    $rootScope.$broadcast('focus:goto');
+                }
+            },
+            {
+                combo: helper.CODING_KEYBOARD_SHORTCUTS.maximizeCodeArea,
+                description: helper.CODING_KEYBOARD_SHORTCUTS_DESCRIPTION.maximizeCodeArea,
+                allowIn: ['INPUT', 'SELECT', 'TEXTAREA'],
+                callback: function (e) {
+                    e.preventDefault();
+                    $scope.problemAreaHeightRatio = 0;
+                    $rootScope.$broadcast('focus:code');
+                }
+            },
+            {
+                combo: helper.CODING_KEYBOARD_SHORTCUTS.maximizeProblemArea,
+                description: helper.CODING_KEYBOARD_SHORTCUTS_DESCRIPTION.maximizeProblemArea,
+                allowIn: ['INPUT', 'SELECT', 'TEXTAREA'],
+                callback: function (e) {
+                    e.preventDefault();
+                    $scope.problemAreaHeightRatio = 1;
+                }
+            },
+            {
+                combo: helper.CODING_KEYBOARD_SHORTCUTS.toggleChat,
+                description: helper.CODING_KEYBOARD_SHORTCUTS_DESCRIPTION.toggleChat,
+                allowIn: ['INPUT', 'SELECT', 'TEXTAREA'],
+                callback: function (e) {
+                    e.preventDefault();
+                    if ($scope.windowStatus.chatArea === 'min') {
+                        $scope.openPanel('chatArea');
+                        $rootScope.$broadcast('focus:chat');
+                    } else if ($scope.windowStatus.chatArea === 'normal') {
+                        $scope.closePanel('chatArea');
+                    }
+                }
+            },
+            {
+                combo: helper.CODING_KEYBOARD_SHORTCUTS.toggleLeaderboard,
+                description: helper.CODING_KEYBOARD_SHORTCUTS_DESCRIPTION.toggleLeaderboard,
+                allowIn: ['INPUT', 'SELECT', 'TEXTAREA'],
+                callback: function (e) {
+                    e.preventDefault();
+                    if ($scope.windowStatus.leaderboard === 'min') {
+                        $scope.openPanel('leaderboard');
+                    } else if ($scope.windowStatus.leaderboard === 'normal') {
+                        $scope.closePanel('leaderboard');
+                    }
+                }
+            },
+            {
+                combo: helper.CODING_KEYBOARD_SHORTCUTS.toggleHelp,
+                allowIn: [],
+                callback: function () {
+                    if ($rootScope.currentModal) {
+                        $rootScope.currentModal.dismiss('cancel');
+                        $rootScope.currentModal = undefined;
+                    } else {
+                        $rootScope.$broadcast('open:help');
+                    }
+                }
+            },
+            {
+                combo: helper.CODING_KEYBOARD_SHORTCUTS.closeDialog,
+                description: helper.CODING_KEYBOARD_SHORTCUTS_DESCRIPTION.closeDialog,
+                allowIn: [],
+                callback: function (e) {
+                    e.preventDefault();
+                    if ($rootScope.currentModal) {
+                        $rootScope.currentModal.dismiss('cancel');
+                        $rootScope.currentModal = undefined;
+                    }
+                    $rootScope.$broadcast('close:testreports');
+                }
+            }
+        ];
+        // event for shortcut help dialog
+        $scope.$on('open:help', function () {
+            $scope.openModal({
+                title: helper.POP_UP_TITLES.KeyboardShortcuts,
+                message: '',
+                hotkeys: hotKeysList
+            }, null, null, 'popupKeyboardShortcuts.html');
+        });
+        // populate shortcuts for numberic test case
+        runCase = function (e, hotkey) {
+            e.preventDefault();
+            $rootScope.$broadcast('close:testreports');
+            $rootScope.$broadcast(helper.BROADCAST_PLUGIN_EVENT.runTestCaseFromPlugin, parseInt(hotkey.format()[0].substr(hotkey.format()[0].length - 1), 10));
+        };
+        for (i = 1; i <= 9; i += 1) {
+            hotKeysList.push({
+                combo: helper.CODING_KEYBOARD_SHORTCUTS.runTestCaseByNumber + '+' + i,
+                allowIn: ['INPUT', 'SELECT', 'TEXTAREA'],
+                callback: runCase
+            });
+        }
+        // bind shortcuts to current scope
+        for (i = 0; i < hotKeysList.length; i += 1) {
+            hotkeys.bindTo($scope).add(hotKeysList[i]);
+        }
         // open the panel
         $scope.openPanel = function (panel) {
             if ($scope.windowStatus[panel] !== 'min') {
                 return;
             }
+            /* should allow expand both at the same time */
             switch (panel) {
             case 'chatArea':
                 $scope.windowStatus.chatArea = 'normal';

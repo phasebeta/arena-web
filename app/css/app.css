@@ -1226,6 +1226,9 @@ footer .right>span:nth-child(2) {
     .systemTestResult .modal-dialog {
         width: 400px !important;
     }
+    .keyboardShortcuts .modal-dialog {
+        width: 800px !important;
+    }
 }
 .modal .modal-lg {
     width: 892px;
@@ -2421,7 +2424,7 @@ footer .right>span:nth-child(2) {
     color: #0bbbe7;
     padding-top: 1px;
 }
-.panelCodeEditor .actionIcons > li {padding-left: 21px; position: relative;padding-top: 2px;}
+.panelCodeEditor .actionIcons > li {padding-left: 23px; position: relative;padding-top: 2px;}
 .panelCodeEditor .actionIcons > li + li {margin-left: 30px;}
 .panelCodeEditor .actionIcons > .link {cursor: pointer;}
 .panelCodeEditor .actionIcons > .link:hover {color: #fff;}
@@ -2437,6 +2440,11 @@ footer .right>span:nth-child(2) {
 .panelCodeEditor .actionIcons .saveLink:before {background-position: 0 -125px;}
 .panelCodeEditor .actionIcons .clearLink:before {background-position: -25px -125px;}
 .panelCodeEditor .actionIcons .submitLink:before {background-position: -51px -125px;}
+.panelCodeEditor .actionIcons .helpLink:before {
+    background-position: -97px -125px;
+    width: 19px;
+    height: 18px;
+}
 /* the img for compile link need to be updated */
 .panelCodeEditor .panel-heading .compileLink:before {background-position: -51px -125px;}
 .panelCodeEditor .panel-heading .rightPart {float:right; margin-top: -1px;}
@@ -3011,7 +3019,8 @@ footer .right>span:nth-child(2) {
     height: 35px;
     padding: 4px 0 6px 12px;
 }
-.testReportPanel .modalHeader .cancel-x {
+.testReportPanel .modalHeader .cancel-x,
+.keyboardShortcuts .modal-header .cancel-x {
     display: block;
     width: 27px;
     height: 24px;
@@ -3019,7 +3028,8 @@ footer .right>span:nth-child(2) {
     right: 3px;
     top: 2px;
 }
-.testReportPanel .modalHeader .cancel-x:before {
+.testReportPanel .modalHeader .cancel-x:before,
+.keyboardShortcuts .modal-header .cancel-x:before {
     content: '';
     display: block;
     width: 9px;
@@ -3062,7 +3072,7 @@ footer .right>span:nth-child(2) {
     word-wrap: break-word;
 }
 .testReportPanel .caseName>a {
-    height: 25px;
+    height: 21px;
     width: 25px;
     position: absolute;
     left: 13px;
@@ -9056,6 +9066,34 @@ table thead .sort.desc{
 }
 .systemTestResult .modal-dialog .modal-content {
     border-color: #1f444e;
+}
+.keyboardShortcuts .modal-header {
+    background: transparent !important;
+    height: 50px !important;
+}
+.keyboardShortcuts .modal-body {
+    margin: 30px !important;
+    height: auto !important;
+}
+.keyboardShortcuts .modal-header .title {
+    line-height: 50px;
+    font-size: 19px;
+    font-weight: 600; /*semibold*/
+}
+.keyboardShortcuts .modal-body .description {
+    color: #dfe1e2;
+}
+.keyboardShortcuts .modal-body .keycombo {
+    color: #ebf056;
+    font-weight: 600; /*semibold*/
+}
+.keyboardShortcuts .modal-body .subscript {
+    font-size: 14px;
+    font-weight: 300; /*light*/
+}
+.keyboardShortcuts .modal-body .table>tbody>tr>td {
+    border-bottom-color: #202121;
+    padding-bottom: 12px;
 }
 .modal .modal-content .systemTestModalBody {
     border-width: 0;

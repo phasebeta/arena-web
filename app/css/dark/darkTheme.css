@@ -47,7 +47,8 @@ body{
 .filterPanel .closeLink:before,
 .wizardBody .panel-heading >span:before,
 .testReportPanel .caseName>a,
-.testReportPanel .modalHeader .cancel-x:before {
+.testReportPanel .modalHeader .cancel-x:before,
+.keyboardShortcuts .modal-header .cancel-x:before {
     background-image: url(../img/dark/sprite-codeArena.png);
 }
 .codeArea .shareLink .dropdown-menu,
@@ -295,11 +296,24 @@ footer .right .sponsorLogo {
 .modal .modal-content .modal-footer {
     border-top: 1px solid #1f444e;
 }
-
 .modal .modal-content .modal-body .argType {
     color: #fff;
 }
-
+.keyboardShortcuts .modal-header .title {
+    color: #f3f4f4;
+}
+.keyboardShortcuts .modal-body .description {
+    color: #dfe1e2;
+}
+.keyboardShortcuts .modal-body .keycombo {
+    color: #ebf056;
+}
+.keyboardShortcuts .modal-body .subscript {
+    color: #afb1b2;
+}
+.keyboardShortcuts .modal-body .table>tbody>tr>td {
+    border-bottom-color: #202121;
+}
 /*contest creation wizard modal*/
 .modal-lg .modal-content {
     border-color: #1f444e

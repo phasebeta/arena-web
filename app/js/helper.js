@@ -351,7 +351,8 @@ module.exports = {
         RoundAccessError: 'Round Access Error',
         ChangeRoundError: 'Change round Error',
         SaveResults: 'Save Results',
-        Reconnect: 'Reconnect'
+        Reconnect: 'Reconnect',
+        KeyboardShortcuts: 'Keyboard Shortcuts'
     },
 
     // custom pop up messages
@@ -582,5 +583,35 @@ module.exports = {
         runTestCaseFromPlugin: 'runTestCaseFromPlugin',
         setTestCasesFromPlugin: 'setTestCasesFromPlugin',
         registerFromPlugin: 'registerFromPlugin'
+    },
+    // user coding keyboard shortcuts property
+    // refer to mousetrap (http://craig.is/killing/mice) for keyboard shortcut expression/syntax
+    // note: mod is equivalent to cmd/ctrl
+    CODING_KEYBOARD_SHORTCUTS: {
+        compile: 'mod+b',
+        runAllTestCases: 'mod+shift+r',
+        runTestCaseByNumber: 'mod+alt', /* number 1-9 is automatically appended to this */
+        jumpToSearchBox: 'mod+s',
+        jumpToGotoBox: 'mod+g',
+        maximizeCodeArea: 'mod+m',
+        maximizeProblemArea: 'mod+p',
+        toggleChat: 'mod+alt+s',
+        toggleLeaderboard: 'mod+alt+l',
+        toggleHelp: '?',
+        closeDialog: 'enter'
+    },
+    // user coding keyboard shortcut description that is displayed on help dialog
+    // there are no descriptions for the following shortcuts: toggleHelp
+    CODING_KEYBOARD_SHORTCUTS_DESCRIPTION: {
+        compile: 'Compile',
+        runAllTestCases: 'Run all test cases',
+        runTestCaseByNumber: 'Run test case by number',
+        jumpToSearchBox: 'Jump to search box',
+        jumpToGotoBox: 'Jump to goto box',
+        maximizeCodeArea: 'Maximize code area',
+        maximizeProblemArea: 'Maximize problem area',
+        toggleChat: 'Toggle chat minimize/expanded',
+        toggleLeaderboard: 'Toggle leaderboard minimize/expanded',
+        closeDialog: 'Close dialog'
     }
 };

@@ -175,3 +175,23 @@
         <button class="btn" data-ng-click="ok()">{{ buttons[0] }}</button>
     </div>
 </script>
+
+<script type="text/ng-template" id="popupKeyboardShortcuts.html">
+    <div class="modal-header">        
+        <span class="title">{{ title }}</span>
+        <a class="cancel-x" data-ng-click="cancel()"></a>
+    </div>
+    <div class="modal-body" data-ng-custom-scrollbar data-rebuild-on-resize data-rebuild-on="popup-message-loaded">
+        <table class="table">
+            <tbody>
+                <tr ng-repeat="hotkey in hotkeys | filter: { description: '!!' }">
+                    <td class="description">{{ hotkey.description }}</td>
+                    <td>
+                        <div class="keycombo">{{ hotkey.combo | keyCombo }}</div>
+                        <div class="subscript" ng-if="hotkey.subscript!=undefined">{{ hotkey.subscript }}</div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</script>

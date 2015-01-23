@@ -300,7 +300,7 @@ var testPanelCtrl = ['$rootScope', '$scope', 'socket', '$timeout', 'appHelper', 
      */
     $scope.filterTestCases = function (testCase) {
         return !testCase.problemId || testCase.problemId === $scope.problem.problemID;
-    }
+    };
 
     /**
      * Delete test case.
@@ -398,15 +398,33 @@ var testPanelCtrl = ['$rootScope', '$scope', 'socket', '$timeout', 'appHelper', 
     });
 
     // Run test case for plugin.
-    $scope.$on(helper.BROADCAST_PLUGIN_EVENT.runTestCaseFromPlugin, function (event, name) {
-        $scope.userData.tests.forEach(function (testCase) {
-            testCase.checked = (testCase.name === name);
-        });
-        $rootScope.userTests.forEach(function (testCase) {
-            testCase.checked = (testCase.name === name);
-        });
-
+    $scope.$on(helper.BROADCAST_PLUGIN_EVENT.runTestCaseFromPlugin, function (event, arg) {
+        var testNum = arg, testIter = 1, name;
+        //Either test name or number
+        if (angular.isNumber(arg)) {
+            $rootScope.userTests.forEach(function (testCase) {
+                testCase.checked = (testNum === testIter);
+                testIter += 1;
+            });
+            $scope.userData.tests.forEach(function (testCase) {
+                testCase.checked = (testNum === testIter);
+                testIter += 1;
+            });
+        } else {
+            name = arg;
+            $scope.userData.tests.forEach(function (testCase) {
+                testCase.checked = (testCase.name === name);
+            });
+            $rootScope.userTests.forEach(function (testCase) {
+                testCase.checked = (testCase.name === name);
+            });
+        }
         $scope.runCheckedTests();
+    });
+
+    // Close test reports
+    $scope.$on('close:testreports', function () {
+        $scope.closeReport();
     });
 
     /**

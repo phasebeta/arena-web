@@ -88,8 +88,8 @@ var config = require('../config');
  *
  * @type {*[]}
  */
-var userCodingEditorCtrl = ['$rootScope', '$scope', '$window', 'appHelper', 'socket', '$timeout', 'sessionHelper',
-    function ($rootScope, $scope, $window, appHelper, socket, $timeout, sessionHelper) {
+var userCodingEditorCtrl = ['$rootScope', '$scope', '$window', 'appHelper', 'socket', '$timeout', 'sessionHelper', 'hotkeys',
+    function ($rootScope, $scope, $window, appHelper, socket, $timeout, sessionHelper, hotkeys) {
         var indentRangeFinder = {
                 rangeFinder: new CodeMirror.fold.combine(CodeMirror.fold.indent, CodeMirror.fold.comment)
             },
@@ -566,6 +566,7 @@ var userCodingEditorCtrl = ['$rootScope', '$scope', '$window', 'appHelper', 'soc
             foldGutter: $scope.lang($scope.langIdx).langGutter,
             gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
             indentUnit: 4,
+            autofocus: true,
             readOnly: 'nocursor',
             onLoad : function (cmInstance) {
                 $scope.cm = cmInstance;
@@ -775,6 +776,12 @@ var userCodingEditorCtrl = ['$rootScope', '$scope', '$window', 'appHelper', 'soc
             }
         };
 
+        /**
+         * Open help modal
+         */
+        $scope.openHelp = function () {
+            $rootScope.$broadcast('open:help');
+        };
         // Handle the submit result response
         socket.on(helper.EVENT_NAME.SubmitResultsResponse, function (data) {
 
